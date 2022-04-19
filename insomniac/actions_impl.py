@@ -698,6 +698,11 @@ def _iterate_over_my_followers_or_followings(device,
         screen_iterated_followings = 0
         screen_skipped_followings = 0
 
+        list_view = device.find(resourceId='android:id/list',
+                                className='android.widget.ListView')
+        # do first swipe to show users, it will fail otherwise on smaller screens
+        list_view.swipe(DeviceFacade.Direction.BOTTOM)
+
         for item in device.find(resourceId=f'{device.app_id}:id/follow_list_container',
                                 className='android.widget.LinearLayout'):
             user_info_view = item.child(index=1)
@@ -723,9 +728,6 @@ def _iterate_over_my_followers_or_followings(device,
             else:
                 print(COLOR_OKBLUE + f"Stopping iteration over {entities_name}" + COLOR_ENDC)
                 return
-
-        list_view = device.find(resourceId='android:id/list',
-                                className='android.widget.ListView')
 
         if screen_skipped_followings == screen_iterated_followings > 0 and is_swipes_allowed:
             print(COLOR_OKGREEN + "All followings skipped, let's do a swipe" + COLOR_ENDC)
